@@ -1,0 +1,18 @@
+{
+  "name": "algorithm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "ciseaux": "^0.4.0",
+    "gridfs-stream": "^1.1.1",
+    "mongoose": "^5.6.11",
+    "music-metadata": "^4.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
