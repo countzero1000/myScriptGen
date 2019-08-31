@@ -3,8 +3,10 @@ const mongoose = require('mongoose');
 const fs = require('fs').promises;
 const mm = require('music-metadata');
 const Ciseaux = require('ciseaux');
-
+const axios = require('axios');
+const Line = require('./line');
 const ofs = require('fs');
+const norm = require('gaussian');
 
 const mongURI = 'mongodb+srv://Admin:iamadmin@mismatch-lla7j.azure.mongodb.net/test?retryWrites=true&w=majority';
 let folderName = 'tmpScript/'
@@ -13,27 +15,119 @@ let nchars = 2;
 let nlines = 14
 let pskipchar = 0.25;
 
+let speechLocal = 'http://localhost:3000';
+let speechRoute = '/tts/payload';
 
-let lines = [
-{ name: 'George_Costanza', fileName: '1_George_Costanza.wav' },
-{ name: 'Jerry_Seinfeld', fileName: '2_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '3_George_Costanza.wav' },
-{ name: 'Jerry_Seinfeld', fileName: '4_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '5_George_Costanza.wav' },
-{ name: 'Jerry_Seinfeld', fileName: '6_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '7_George_Costanza.wav' },
-{ name: 'Jerry_Seinfeld', fileName: '8_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '9_George_Costanza.wav' },
-{ name: 'Jerry_Seinfeld', fileName: '10_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '11_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '12_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '13_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '14_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '15_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '16_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '17_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '18_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '19_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '20_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '21_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '22_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '23_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '24_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '25_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '26_Jerry_Seinfeld.wav' },
-{ name: 'George_Costanza', fileName: '27_George_Costanza.wav' },  { name: 'Jerry_Seinfeld', fileName: '28_Jerry_Seinfeld.wav' } ];
+let laughs = [ 'a_laugh track 1_01.wav',
+  'a_laugh track 1_02.wav',
+  'a_laugh track 1_03.wav',
+  'a_laugh track 1_04.wav',
+  'a_laugh track 1_05.wav',
+  'a_laugh track 1_06.wav',
+  'a_laugh track 1_07.wav',
+  'a_laugh track 1_08.wav',
+  'a_laugh track 1_09.wav',
+  'a_laugh track 1_10.wav',
+  'a_laugh track 1_11.wav',
+  'a_laugh track 1_12.wav',
+  'a_laugh track 1_13 (3 part).wav',
+  'a_laugh track 1_14.wav',
+  'a_laugh track 1_15.wav',
+  'a_laugh track 1_16.wav',
+  'a_laugh track 1_17.wav',
+  'a_laugh track 1_18.wav',
+  'a_laugh track 1_19 (off color).wav',
+  'a_laugh track 1_20.wav',
+  'a_laugh track 1_21.wav',
+  'a_laugh track 1_23.wav',
+  'a_laugh track 1_24 (small).wav',
+  'a_laugh track 1_25 (ooooh!).wav',
+  'a_laugh track 1_26.wav',
+  'a_laugh track 1_27.wav',
+  'a_laugh track 1_28.wav',
+  'a_laugh track 1_29.wav',
+  'a_laugh track 1_30.wav',
+  'a_laugh track 1_31.wav',
+  'a_laugh track 1_32.wav',
+  'a_laugh track 1_33.wav',
+  'a_laugh track 1_34.wav',
+  'a_laugh track 1_35 (extended chuckle).wav',
+  'a_laugh track 1_36 (oooh!).wav']
+
+
+
+
+
+
+makeRequestForNewLineFiles = async (lines) => {
+
+    return new Promise( (resolve, reject) => { 
+
+        let mongoOptions = { 
+            reconnectTries: Number.MAX_VALUE, 
+            reconnectInterval: 500,
+            useNewUrlParser: true
+        }
+
+        mongoose.connect(mongURI,mongoOptions);
+
+        
+
+        mongoose.connection.once("open", async ()=>{
+
+        
+            //get Jerry's lines
+
+            for(let i = 0; i < nlines; i++){
+
+                let index = Math.floor(Math.random()*(64))
+
+                await Line.find({
+                    index:index,
+                    character:"George"
+                }).then( async (line)=>{
+                    let reqline = {
+                        character: "George_Costanza",
+                        text: line[0].text
+                    }
+
+                    lines.push(reqline);
+                    
+                })
+
+                await Line.find({
+                    index:index,
+                    character:"Jerry"
+                }).then( async (line)=>{
+                    let reqline = {
+                        character: "Jerry_Seinfeld",
+                        text: line[0].text
+                    }
+
+                    lines.push(reqline);
+                    
+                })
+            }
+
+            mongoose.connection.close();
+            resolve();
+        })
+
+
+    })
+        
+
+
+      
+
+      
+
+
+}
+
+
+
+
 
 
 
@@ -43,23 +137,23 @@ downloadFiles = async (lines) => {
         reconnectTries: Number.MAX_VALUE, 
         reconnectInterval: 500,
         useNewUrlParser: true,
-        useMongoClient: true 
       }
 
       mongoose.connect(mongURI,mongoOptions);
 
-      mongoose.connection.once("open" , ()=>{
+      await mongoose.connection.once("open" , ()=>{
 
 
        let gfs = Grid(mongoose.connection.db,mongoose.mongo);
       
-        lines.forEach((filename) =>{
-
+        lines.forEach((obj) =>{
+          
         let readStream  = gfs.createReadStream({
-            filename : filename
+            
+            filename : obj.fileName
         });
 
-        readStream.pipe(ofs.createWriteStream(folderName+filename));
+        readStream.pipe(ofs.createWriteStream(folderName+obj.fileName));
         })
 
     })
@@ -105,11 +199,11 @@ sortLines = async (lines,nchars,nlines,pskipchar) => {
 
 
 
-buildTimeLine = async (nlines,nchars,linesTime,LTtime) => {
+buildTimeLine = async (nlines,nchars,linesTime) => {
 
     let totalLines = nchars * nlines;
 
-    let maxT = 0;
+    let totalTime = 0;
 
     kchar = 0;
     kLT  = 0;
@@ -122,10 +216,12 @@ buildTimeLine = async (nlines,nchars,linesTime,LTtime) => {
      
         if(Math.random() > pskipchar){
             
-            
+            let data = await mm.parseFile(linesTime[currentCharacter-1][kchar]);
 
-            timeLine.push( await Ciseaux.from(linesTime[currentCharacter-1][kchar]));
-            console.log(linesTime[currentCharacter-1][kchar]);
+            timeLine.push( Ciseaux.concat( Ciseaux.silence(totalTime) , await Ciseaux.from(linesTime[currentCharacter-1][kchar])));
+
+            totalTime += data.format.duration;
+            
                 
         }
 
@@ -138,21 +234,24 @@ buildTimeLine = async (nlines,nchars,linesTime,LTtime) => {
 
         if(Math.random() < pLT){
 
-        
-            timeLine.push(await Ciseaux.silence(Cldist())); // write CLdelay
+            totalTime += Cldist();   
             
-            timeLine.push(await Ciseaux.from('laugh track 1_01.wav'));
+            let laugh = "laughs/" + laughs[Math.floor(Math.random()*(laughs.length-1))]
+            
+            timeLine.push( Ciseaux.concat(Ciseaux.silence(totalTime),await Ciseaux.from(laugh)));
 
-            timeLine.push(await Ciseaux.silence(LCdist())); // do later
+            let data = await mm.parseFile(laugh);
 
-           
+            totalTime += data.format.duration;
+
+            totalTime += LCdist();
 
             kLT = kLT +1;
 
 
         } else {
 
-            timeLine.push(await Ciseaux.silence(CCdist()));
+            totalTime += CCdist();
 
         }
 
@@ -161,9 +260,9 @@ buildTimeLine = async (nlines,nchars,linesTime,LTtime) => {
     }
 
 
-    console.log(timeLine.length);
+    console.log(timeLine.length, " " , totalTime);
 
-    let finalTape = await Ciseaux.concat(timeLine);
+    let finalTape = await Ciseaux.mix(timeLine);
 
     fs.writeFile('finalCut.wav', new Uint8Array(await finalTape.render()));
 
@@ -176,32 +275,60 @@ buildTimeLine = async (nlines,nchars,linesTime,LTtime) => {
 
 CCdist = () =>{
 
-    return .2;
+    return norm(.1,.1).ppf(Math.random())
 
 }
 
 Cldist =() =>{
 
-    return .3;
+    return norm(.4,.2).ppf(Math.random())
 }
 
 LCdist =() =>{
-    return .4;
-
+    
+    return norm(.5,.7).ppf(Math.random());
 }
 
-//downloadFiles(lines);
+
 
 main = async () => {
+    
 
-    let sorted = await sortLines(lines);
+  
+
+    
+    let lines = [];
+
+    await makeRequestForNewLineFiles(lines);
+
+    await axios.post(speechLocal+speechRoute,
+
+        {scriptData : lines}).then( async (res)=>{
+            
+           
+           let files = await res.data;
+
+           downloadFiles(files);
+
+           let sorted = await sortLines(files);
 
 
-    buildTimeLine(nlines,nchars,sorted,pLT);
+           buildTimeLine(nlines,nchars,sorted,pLT);
 
+           
+    })
+
+
+        
+
+        
 }
 
 main();
+
+
+
+
 
 
 

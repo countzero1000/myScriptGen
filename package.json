@@ -4,10 +4,13 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "axios": "^0.19.0",
     "ciseaux": "^0.4.0",
+    "gaussian": "^1.1.0",
     "gridfs-stream": "^1.1.1",
     "mongoose": "^5.6.11",
-    "music-metadata": "^4.3.1"
+    "music-metadata": "^4.3.1",
+    "normal-distribution": "0.0.7"
   },
   "devDependencies": {},
   "scripts": {
