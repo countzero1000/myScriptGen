@@ -339,10 +339,24 @@ app.get('/generateNew', (req, res) => {
 
     main()
         .then(() => {
-            console.log("!!!!sent response!!!!");
-            res.contentType('audio/wav');
-            //res.set({'transfer-encoding':'chunked'});
-            ofs.createReadStream('finalCut.wav').pipe(res);
+            
+
+            res.writeHead(200,{
+                'Content-length':'',
+                'Content-Type' : 'audio/wav'
+            })
+
+            let stream = ofs.createReadStream('finalCut.wav');
+
+            stream.on("open",()=>{
+                stream.pipe(res)
+                console.log("!!!!sent response!!!!");
+            })
+
+            stream.on("error",(err)=>{
+                console.log(err)
+            })
+
         });
 
 
