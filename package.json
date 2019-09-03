@@ -6,6 +6,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "ciseaux": "^0.4.0",
+    "express": "^4.17.1",
     "gaussian": "^1.1.0",
     "gridfs-stream": "^1.1.1",
     "mongoose": "^5.6.11",
