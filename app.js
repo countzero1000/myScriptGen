@@ -30,7 +30,7 @@ let pLT = .2;
 let nchars = 2;
 let nlines = 18;
 let pskipchar = 0.25;
-
+const speechCloud = "https://speech-synth.herokuapp.com";
 let speechLocal = 'http://localhost:3000';
 let speechRoute = '/tts/payload';
 
@@ -310,7 +310,7 @@ main = async () => {
         await makeRequestForNewLineFiles(lines);
 
 
-        await axios.post(speechLocal + speechRoute,
+        await axios.post(speechCloud + speechRoute,
 
             { scriptData: lines }).then(async (res) => {
 
