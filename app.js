@@ -340,8 +340,8 @@ app.get('/generateNew', (req, res) => {
     main()
         .then(() => {
             console.log("!!!!sent response!!!!");
-            //res.contentType('audio/x-wav');
-            //res.set({'transfer-encoding':''});
+            res.contentType('audio/x-wav');
+            res.set({'transfer-encoding':'chunked'});
             ofs.createReadStream('finalCut.wav').pipe(res);
         });
 
