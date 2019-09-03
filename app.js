@@ -343,28 +343,12 @@ app.get('/generateNew', (req, res) => {
 
             res.writeHead(200,{
                 
-                'Content-Type' : 'audio/wav'
+                'Content-Type' : 'audio/x-wav'
             })
 
             let stream = ofs.createReadStream('finalCut.wav');
-
-            stream.on("open",() => {
-                console.log("sending response");
-            })
-
-            stream.on('data',(chunk)=>{
-                console.log('writing');
-                res.write(chunk)
-            })
-
-            stream.on('end', ()=>{
-                console.log('done writing')
-                res.end();
-            })
-
-            stream.on("error",(err)=>{
-                console.log(err)
-            })
+            stream.pipe(res);
+     
 
         });
 
