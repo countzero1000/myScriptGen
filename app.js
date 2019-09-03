@@ -352,12 +352,18 @@ app.get('/generateNew', (req, res) => {
 
 
 
-const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
-    console.log('Press Ctrl+C to quit.');
+var port = process.env.PORT || 3000;
+
+
+app.get('/', function (req, res) {
+
+    res.send( 'You are at the root');
+
 });
 
+app.listen(port, function () {
+ console.log(`Example app listening on port !`);
+});
 
 
