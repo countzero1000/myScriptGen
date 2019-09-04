@@ -344,7 +344,8 @@ app.get('/generateNew', (req, res) => {
             res.writeHead(200,{
                
                 'Content-Type' : 'audio/wav',
-                'Connectio' : 'keep-alive'
+                'Connectio' : 'keep-alive',
+                'Transfer-Encoding': 'chunked'
             })
 
             let stream = ofs.createReadStream('finalCut.wav');
