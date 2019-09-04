@@ -341,7 +341,7 @@ app.get('/generateNew', (req, res) => {
         .then(() => {
             
 
-            res.writeHead(100,{
+            res.writeHead(200,{
                 
                 'Content-Type' : 'audio/x-wav'
             })
