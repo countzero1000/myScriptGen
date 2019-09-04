@@ -349,7 +349,9 @@ app.get('/generateNew', (req, res) => {
 
             let stream = ofs.createReadStream('finalCut.wav');
 
-            stream.on("open",() => {
+            stream.pipe(res);
+
+            /*stream.on("open",() => {
                 console.log("sending response");
             })
 
@@ -364,7 +366,7 @@ app.get('/generateNew', (req, res) => {
 
             stream.on("error",(err)=>{
                 console.log(err)
-            })
+            })*/
 
         });
 
