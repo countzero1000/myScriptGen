@@ -9,6 +9,7 @@ const ofs = require('fs');
 const norm = require('gaussian');
 const express = require('express');
 
+
 process.setMaxListeners(0);
 
 
@@ -344,8 +345,9 @@ app.get('/generateNew', (req, res) => {
             res.writeHead(200,{
                
                 'Content-Type' : 'audio/wav',
-                'Connectio' : 'keep-alive',
-                'Transfer-Encoding': 'chunked'
+                'Connection' : 'keep-alive',
+                'Transfer-Encoding': 'chunked',
+                'Accept-Encoding':'gzip,deflate'
             })
 
             let stream = ofs.createReadStream('finalCut.wav');
