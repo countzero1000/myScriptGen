@@ -351,25 +351,8 @@ app.get('/generateNew', (req, res) => {
             })
 
             let stream = ofs.createReadStream('finalCut.wav');
-
+            stream.on('end', ()=> res.end());
             stream.pipe(res);
-
-            /*stream.on("open",() => {
-                console.log("sending response");
-            })
-
-            stream.on('data',(chunk)=>{
-                console.log(chunk);
-                res.write(chunk)
-            })
-
-            stream.on('end', ()=>{
-                res.end();
-            })
-
-            stream.on("error",(err)=>{
-                console.log(err)
-            })*/
 
         });
 
